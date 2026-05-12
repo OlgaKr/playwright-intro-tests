@@ -1,151 +1,142 @@
 import { test, expect } from '@playwright/test';
+import { RegistrationPage } from '../pages/RegistrationPage';
+import { GaragePage } from '../pages/GaragePage';
+import { LoginPage } from '../pages/LoginPage';
+import { SettingsPage } from '../pages/SettingsPage';
 
-test.describe('Registration form', () => {
+test.describe('Registration form', () => { 
+
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.getByRole('button', { name: 'Sign up' }).click();
-  });
+  const registrationPage = new RegistrationPage(page);
 
-  const nameInput = '#signupName';
-  const lastNameInput = '#signupLastName';
-  const emailInput = '#signupEmail';
-  const passwordInput = '#signupPassword';
-  const reEnterPasswordInput = '#signupRepeatPassword';
-  const registerButton = 'button:has-text("Register")';
-
+  await registrationPage.open();
+  await registrationPage.openRegistrationForm();
+});
+ 
   test('Registration modal is visible', async ({ page }) => {
-    await expect(
-      page.getByRole('heading', { name: 'Registration' })
-    ).toBeVisible();
-  });
+  const registrationPage = new RegistrationPage(page);
+
+  await expect(registrationPage.registrationTitle).toBeVisible();
+});
 
   test('should show error when name is empty', async ({ page }) => {
-    await page.locator(nameInput).focus();
-    await page.locator(nameInput).blur();
+  const registrationPage = new RegistrationPage(page);
 
-    await expect(page.getByText('Name required')).toBeVisible();
-    await expect(page.locator(registerButton)).toBeDisabled();
-  });
+  await registrationPage.focusAndBlurField(registrationPage.nameInput);
+
+  await expect(registrationPage.getErrorMessage('Name required')).toBeVisible();
+  await expect(registrationPage.registerButton).toBeDisabled();
+});
 
   test('should show error for invalid name', async ({ page }) => {
-    await page.locator(nameInput).fill('1');
-    await page.locator(nameInput).blur();
+  const registrationPage = new RegistrationPage(page);
 
-    await expect(page.getByText('Name is invalid')).toBeVisible();
-    await expect(
-      page.getByText('Name has to be from 2 to 20 characters long')
-    ).toBeVisible();
+  await registrationPage.fillFieldAndBlur(registrationPage.nameInput,'1');
 
-    await expect(page.locator(registerButton)).toBeDisabled();
-  });
+  await expect(registrationPage.getErrorMessage('Name is invalid')).toBeVisible();
+  await expect(registrationPage.getErrorMessage('Name has to be from 2 to 20 characters long')).toBeVisible();
+  await expect(registrationPage.registerButton).toBeDisabled();
+});
 
   test('should show error when last name is empty', async ({ page }) => {
-    await page.locator(lastNameInput).focus();
-    await page.locator(lastNameInput).blur();
+  const registrationPage = new RegistrationPage(page);
 
-    await expect(page.getByText('Last name required')).toBeVisible();
-    await expect(page.locator(registerButton)).toBeDisabled();
-  });
+  await registrationPage.focusAndBlurField(registrationPage.lastNameInput);
+
+  await expect(registrationPage.getErrorMessage('Last name required')).toBeVisible();
+  await expect(registrationPage.registerButton).toBeDisabled();
+});
 
   test('should show error for invalid last name', async ({ page }) => {
-    await page.locator(lastNameInput).fill('1');
-    await page.locator(lastNameInput).blur();
+  const registrationPage = new RegistrationPage(page);
 
-    await expect(page.getByText('Last name is invalid')).toBeVisible();
-    await expect(
-      page.getByText('Last name has to be from 2 to 20 characters long')
-    ).toBeVisible();
+  await registrationPage.fillFieldAndBlur(registrationPage.lastNameInput,'1');
 
-    await expect(page.locator(registerButton)).toBeDisabled();
-  });
+  await expect(registrationPage.getErrorMessage('Last name is invalid')).toBeVisible();
+  await expect(registrationPage.getErrorMessage('Last name has to be from 2 to 20 characters long')).toBeVisible();
+  await expect(registrationPage.registerButton).toBeDisabled();
+});
 
   test('should show error when email is empty', async ({ page }) => {
-    await page.locator(emailInput).focus();
-    await page.locator(emailInput).blur();
+    const registrationPage = new RegistrationPage(page);
 
-    await expect(page.getByText('Email required')).toBeVisible();
-    await expect(page.locator(registerButton)).toBeDisabled();
+    await registrationPage.focusAndBlurField(registrationPage.emailInput);
+
+    await expect(registrationPage.getErrorMessage('Email required')).toBeVisible();
+    await expect(registrationPage.registerButton).toBeDisabled();
   });
 
   test('should show error for invalid email', async ({ page }) => {
-    await page.locator(emailInput).fill('test');
-    await page.locator(emailInput).blur();
+    const registrationPage = new RegistrationPage(page);
 
-    await expect(page.getByText('Email is incorrect')).toBeVisible();
-    await expect(page.locator(registerButton)).toBeDisabled();
+    await registrationPage.fillFieldAndBlur(registrationPage.emailInput,'1');
+
+    await expect(registrationPage.getErrorMessage('Email is incorrect')).toBeVisible();
+    await expect(registrationPage.registerButton).toBeDisabled();
   });
 
   test('should show error when password is empty', async ({ page }) => {
-    await page.locator(passwordInput).focus();
-    await page.locator(passwordInput).blur();
+    const registrationPage = new RegistrationPage(page);
 
-    await expect(page.getByText('Password required')).toBeVisible();
-    await expect(page.locator(registerButton)).toBeDisabled();
+    await registrationPage.focusAndBlurField(registrationPage.passwordInput);
+
+    await expect(registrationPage.getErrorMessage('Password required')).toBeVisible();
+    await expect(registrationPage.registerButton).toBeDisabled();
   });
 
   test('should show error for invalid password', async ({ page }) => {
-    await page.locator(passwordInput).fill('123');
-    await page.locator(passwordInput).blur();
+    const registrationPage = new RegistrationPage(page);
 
-    await expect(
-      page.getByText(
-        'Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter'
-      )
-    ).toBeVisible();
+    await registrationPage.fillFieldAndBlur(registrationPage.passwordInput,'1');
 
-    await expect(page.locator(registerButton)).toBeDisabled();
+    await expect(registrationPage
+    .getErrorMessage('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter'))
+    .toBeVisible();
+    await expect(registrationPage.registerButton).toBeDisabled();
   });
 
   test('should show error when Re-enter password is empty', async ({ page }) => {
-    await page.locator(reEnterPasswordInput).focus();
-    await page.locator(reEnterPasswordInput).blur();
+    const registrationPage = new RegistrationPage(page);
 
-    await expect(page.getByText('Re-enter password required')).toBeVisible();
-    await expect(page.locator(registerButton)).toBeDisabled();
+    await registrationPage.focusAndBlurField(registrationPage.repeatPasswordInput);
+
+    await expect(registrationPage.getErrorMessage('Re-enter password required')).toBeVisible();
+    await expect(registrationPage.registerButton).toBeDisabled();
   });
 
   test('should show error when passwords do not match', async ({ page }) => {
-    await page.locator(passwordInput).fill('Password123');
-    await page.locator(reEnterPasswordInput).fill('Password321');
-    await page.locator(reEnterPasswordInput).blur();
+    const registrationPage = new RegistrationPage(page);
 
-    await expect(page.getByText('Passwords do not match')).toBeVisible();
-    await expect(page.locator(registerButton)).toBeDisabled();
+    await registrationPage.fillDifferentPasswords('Password123','Password321');
+
+    await expect(registrationPage.getErrorMessage('Passwords do not match')).toBeVisible();
+    await expect(registrationPage.registerButton).toBeDisabled();
   });
 
   test('should register user with valid data', async ({ page }) => {
     const email = `aqa-olga-${Date.now()}@test.com`;
 
-    // Create account
-    await page.locator(nameInput).fill('Olga');
-    await page.locator(lastNameInput).fill('Kravchenko');
-    await page.locator(emailInput).fill(email);
-    await page.locator(passwordInput).fill('Password123');
-    await page.locator(reEnterPasswordInput).fill('Password123');
+    const registrationPage = new RegistrationPage(page);
+    const garagePage = new GaragePage(page);
+    const loginPage = new LoginPage(page);
+    const settingsPage = new SettingsPage(page);
 
-    await expect(page.locator(registerButton)).toBeEnabled();
-    await page.locator(registerButton).click();
+    await registrationPage.registerUser('Olga','Kravchenko',email,'Password123');
 
-    await expect(page.getByRole('heading', { name: 'Garage' })).toBeVisible();
+    await expect(registrationPage.registerButton).toBeEnabled();
 
-    // Log out
-    await page.getByText('My profile').click();
-    await page.getByRole('button', { name: 'Logout' }).click();
+    await registrationPage.registerButton.click();
 
-    // Log in with created account
-    await page.getByRole('button', { name: 'Sign In' }).click();
-    await page.locator('#signinEmail').fill(email);
-    await page.locator('#signinPassword').fill('Password123');
-    await page.getByRole('button', { name: 'Login' }).click();
+    await expect(garagePage.garageTitle).toBeVisible();
 
-    await expect(page.getByRole('heading', { name: 'Garage' })).toBeVisible();
+    await garagePage.logout();
 
-    // Delete account
-    await page.getByRole('link', { name: /Settings/ }).click();
-    await page.getByRole('button', { name: 'Remove my account' }).click();
-    await page.getByRole('button', { name: 'Remove' }).click();
+    await loginPage.login(email, 'Password123');
 
-    await expect(page.getByRole('button', { name: 'Sign In' })).toBeVisible();
-});
+    await expect(garagePage.garageTitle).toBeVisible();
 
+    await settingsPage.deleteAccount();
+
+    await expect(loginPage.signInButton).toBeVisible();
+  });
 });
