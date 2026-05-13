@@ -3,6 +3,7 @@ import { RegistrationPage } from '../pages/RegistrationPage';
 import { GaragePage } from '../pages/GaragePage';
 import { LoginPage } from '../pages/LoginPage';
 import { SettingsPage } from '../pages/SettingsPage';
+import { userData } from '../test-data/userData';
 
 test.describe('Registration form', () => { 
 
@@ -16,7 +17,7 @@ test.describe('Registration form', () => {
   test('Registration modal is visible', async ({ page }) => {
   const registrationPage = new RegistrationPage(page);
 
-  await expect(registrationPage.registrationTitle).toBeVisible();
+  await registrationPage.expectRegistrationTitleVisible();
 });
 
   test('should show error when name is empty', async ({ page }) => {
@@ -24,8 +25,8 @@ test.describe('Registration form', () => {
 
   await registrationPage.focusAndBlurField(registrationPage.nameInput);
 
-  await expect(registrationPage.getErrorMessage('Name required')).toBeVisible();
-  await expect(registrationPage.registerButton).toBeDisabled();
+  await registrationPage.expectErrorMessageVisible('Name required' );
+  await registrationPage.expectRegisterButtonDisabled();
 });
 
   test('should show error for invalid name', async ({ page }) => {
@@ -33,9 +34,9 @@ test.describe('Registration form', () => {
 
   await registrationPage.fillFieldAndBlur(registrationPage.nameInput,'1');
 
-  await expect(registrationPage.getErrorMessage('Name is invalid')).toBeVisible();
-  await expect(registrationPage.getErrorMessage('Name has to be from 2 to 20 characters long')).toBeVisible();
-  await expect(registrationPage.registerButton).toBeDisabled();
+  await registrationPage.expectErrorMessageVisible('Name is invalid' );
+  await registrationPage.expectErrorMessageVisible('Name has to be from 2 to 20 characters long' );
+  await registrationPage.expectRegisterButtonDisabled();
 });
 
   test('should show error when last name is empty', async ({ page }) => {
@@ -43,8 +44,8 @@ test.describe('Registration form', () => {
 
   await registrationPage.focusAndBlurField(registrationPage.lastNameInput);
 
-  await expect(registrationPage.getErrorMessage('Last name required')).toBeVisible();
-  await expect(registrationPage.registerButton).toBeDisabled();
+  await registrationPage.expectErrorMessageVisible('Last name required' );
+  await registrationPage.expectRegisterButtonDisabled();
 });
 
   test('should show error for invalid last name', async ({ page }) => {
@@ -52,9 +53,9 @@ test.describe('Registration form', () => {
 
   await registrationPage.fillFieldAndBlur(registrationPage.lastNameInput,'1');
 
-  await expect(registrationPage.getErrorMessage('Last name is invalid')).toBeVisible();
-  await expect(registrationPage.getErrorMessage('Last name has to be from 2 to 20 characters long')).toBeVisible();
-  await expect(registrationPage.registerButton).toBeDisabled();
+  await registrationPage.expectErrorMessageVisible('Last name is invalid' );
+  await registrationPage.expectErrorMessageVisible('Last name has to be from 2 to 20 characters long' );
+  await registrationPage.expectRegisterButtonDisabled();
 });
 
   test('should show error when email is empty', async ({ page }) => {
@@ -62,8 +63,8 @@ test.describe('Registration form', () => {
 
     await registrationPage.focusAndBlurField(registrationPage.emailInput);
 
-    await expect(registrationPage.getErrorMessage('Email required')).toBeVisible();
-    await expect(registrationPage.registerButton).toBeDisabled();
+    await registrationPage.expectErrorMessageVisible('Email required' );
+    await registrationPage.expectRegisterButtonDisabled();
   });
 
   test('should show error for invalid email', async ({ page }) => {
@@ -71,8 +72,8 @@ test.describe('Registration form', () => {
 
     await registrationPage.fillFieldAndBlur(registrationPage.emailInput,'1');
 
-    await expect(registrationPage.getErrorMessage('Email is incorrect')).toBeVisible();
-    await expect(registrationPage.registerButton).toBeDisabled();
+    await registrationPage.expectErrorMessageVisible('Email is incorrect' );
+    await registrationPage.expectRegisterButtonDisabled();
   });
 
   test('should show error when password is empty', async ({ page }) => {
@@ -80,8 +81,8 @@ test.describe('Registration form', () => {
 
     await registrationPage.focusAndBlurField(registrationPage.passwordInput);
 
-    await expect(registrationPage.getErrorMessage('Password required')).toBeVisible();
-    await expect(registrationPage.registerButton).toBeDisabled();
+    await registrationPage.expectErrorMessageVisible('Password required' );
+    await registrationPage.expectRegisterButtonDisabled();
   });
 
   test('should show error for invalid password', async ({ page }) => {
@@ -89,10 +90,9 @@ test.describe('Registration form', () => {
 
     await registrationPage.fillFieldAndBlur(registrationPage.passwordInput,'1');
 
-    await expect(registrationPage
-    .getErrorMessage('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter'))
-    .toBeVisible();
-    await expect(registrationPage.registerButton).toBeDisabled();
+    await registrationPage
+    .expectErrorMessageVisible('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter' );
+    await registrationPage.expectRegisterButtonDisabled();
   });
 
   test('should show error when Re-enter password is empty', async ({ page }) => {
@@ -100,8 +100,8 @@ test.describe('Registration form', () => {
 
     await registrationPage.focusAndBlurField(registrationPage.repeatPasswordInput);
 
-    await expect(registrationPage.getErrorMessage('Re-enter password required')).toBeVisible();
-    await expect(registrationPage.registerButton).toBeDisabled();
+    await registrationPage.expectErrorMessageVisible('Re-enter password required' );
+    await registrationPage.expectRegisterButtonDisabled();
   });
 
   test('should show error when passwords do not match', async ({ page }) => {
@@ -109,8 +109,8 @@ test.describe('Registration form', () => {
 
     await registrationPage.fillDifferentPasswords('Password123','Password321');
 
-    await expect(registrationPage.getErrorMessage('Passwords do not match')).toBeVisible();
-    await expect(registrationPage.registerButton).toBeDisabled();
+    await registrationPage.expectErrorMessageVisible('Passwords do not match' );
+    await registrationPage.expectRegisterButtonDisabled();
   });
 
   test('should register user with valid data', async ({ page }) => {
@@ -121,22 +121,22 @@ test.describe('Registration form', () => {
     const loginPage = new LoginPage(page);
     const settingsPage = new SettingsPage(page);
 
-    await registrationPage.registerUser('Olga','Kravchenko',email,'Password123');
+    await registrationPage.registerUser(userData.name, userData.lastName, email, userData.password);
 
-    await expect(registrationPage.registerButton).toBeEnabled();
+    await registrationPage.expectRegisterButtonEnabled();
 
-    await registrationPage.registerButton.click();
+    await registrationPage.clickRegisterButton();
 
-    await expect(garagePage.garageTitle).toBeVisible();
+    await garagePage.expectGarageTitleVisible();
 
     await garagePage.logout();
 
-    await loginPage.login(email, 'Password123');
+    await loginPage.login(email, userData.password);
 
-    await expect(garagePage.garageTitle).toBeVisible();
+    await garagePage.expectGarageTitleVisible();
 
     await settingsPage.deleteAccount();
 
-    await expect(loginPage.signInButton).toBeVisible();
+    await loginPage.expectSignInButtonVisible();
   });
 });

@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class RegistrationPage extends BasePage {
@@ -52,16 +52,31 @@ export class RegistrationPage extends BasePage {
     return this.page.getByText(text);
   }
 
-  async registerUser(
-    name: string,
-    lastName: string,
-    email: string,
-    password: string
-    ) {
-      await this.nameInput.fill(name);
-      await this.lastNameInput.fill(lastName);
-      await this.emailInput.fill(email);
-      await this.passwordInput.fill(password);
-      await this.repeatPasswordInput.fill(password);
-      }
+  async clickRegisterButton() {
+    await this.registerButton.click();
+  }
+
+  async registerUser(name: string, lastName: string, email: string, password: string) {
+    await this.nameInput.fill(name);
+    await this.lastNameInput.fill(lastName);
+    await this.emailInput.fill(email);
+    await this.passwordInput.fill(password);
+    await this.repeatPasswordInput.fill(password);
+  }
+
+  async expectRegistrationTitleVisible() {
+    await expect(this.registrationTitle).toBeVisible();
+  }
+
+  async expectErrorMessageVisible(message: string) {
+    await expect(this.getErrorMessage(message)).toBeVisible();
+  }
+
+  async expectRegisterButtonDisabled() {
+    await expect(this.registerButton).toBeDisabled();
+  }
+
+  async expectRegisterButtonEnabled() {
+    await expect(this.registerButton).toBeEnabled();
+  }
 }

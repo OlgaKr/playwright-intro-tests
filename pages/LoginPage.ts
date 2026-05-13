@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class LoginPage extends BasePage {
@@ -13,6 +13,10 @@ export class LoginPage extends BasePage {
     this.emailInput = page.locator('#signinEmail');
     this.passwordInput = page.locator('#signinPassword');
     this.loginButton = page.getByRole('button', { name: 'Login' });
+  }
+
+  async expectSignInButtonVisible(){
+    await expect(this.signInButton).toBeVisible();
   }
 
   async login(email: string, password: string) {

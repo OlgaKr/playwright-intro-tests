@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class GaragePage extends BasePage {
@@ -11,6 +11,10 @@ export class GaragePage extends BasePage {
     this.garageTitle = page.getByRole('heading', { name: 'Garage' });
     this.myProfileButton = page.getByText('My profile');
     this.logoutButton = page.getByRole('button', { name: 'Logout' });
+  }
+
+  async expectGarageTitleVisible(){
+    await expect(this.garageTitle).toBeVisible();
   }
 
   async logout() {
