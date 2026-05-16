@@ -1,13 +1,13 @@
 const dotenv = require('dotenv');
 
 function config() {
-  if (process.env.TEST_ENV === 'qa') {
+  if (process.env.TEST_ENV === 'QA') {
     dotenv.config({ path: 'config/.env.qa' });
-  } else if (process.env.TEST_ENV === 'stage') {
+  } else if (process.env.TEST_ENV === 'STAGE') {
     dotenv.config({ path: 'config/.env.stage' });
   } else {
     throw new Error('NO ENV');
   }
 }
 
-module.exports = { config };
+module.exports.config = config;

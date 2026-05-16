@@ -2,6 +2,8 @@ import { defineConfig, devices } from '@playwright/test';
 import { config } from './config/env.config';
 config();
 
+console.log('BASE_URL:', process.env.BASE_URL);
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,

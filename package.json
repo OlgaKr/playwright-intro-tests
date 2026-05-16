@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+"scripts": {
+  "test:qa": "set TEST_ENV=QA&& npx playwright test",
+  "test:stage": "set TEST_ENV=STAGE&& npx playwright test"
+},
+
   "repository": {
     "type": "git",
     "url": "git+https://github.com/OlgaKr/playwright-intro-tests.git"
