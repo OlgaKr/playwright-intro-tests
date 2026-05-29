@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import { config } from './config/env.config';
 config();
+import { authFile } from './tests/fixtures/auth';
 
 console.log('BASE_URL:', process.env.BASE_URL);
 
@@ -22,10 +23,19 @@ export default defineConfig({
     password: process.env.HTTP_CREDENTIALS_PASSWORD!,
   },
   },
+
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+  {
+     name: 'setup',
+     testMatch: /.*\.setup\.ts/,
+  },
+  {
+     name: 'chromium',
+     dependencies: ['setup'],
+     use: {
+      ...devices['Desktop Chrome'],
+      storageState: authFile,
     },
-  ],
+  },
+],  
 });
